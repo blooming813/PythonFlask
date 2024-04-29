@@ -6,6 +6,13 @@ from passlib.hash import sha256_crypt
 
 app=Flask(__name__)
 
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = '123456'
+app.config['MYSQL_DB'] = 'flask'
+app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
+mysql = MySQL(app)
+
 #add data
 Articles = Articles()
 
@@ -17,6 +24,7 @@ def index():
 @app.route('/about')
 def about():
     return render_template('about.html')
+
 
 @app.route('/articles')
 def articles():
@@ -31,7 +39,7 @@ class RegisterForm(Form):
     username = StringField('Username', [validators.length(min=4, max=25)])
     email = StringField('Email', [validators.length(min=6, max=50)])
     password = StringField('Password', [validators.DataRequired(),
-                                        validators.EqualTo('Confirm', message='Passwords do not match')
+                                        validators.EqualTo('confirm', message='Passwords do not match')
                                         ])
     confirm = PasswordField('Confirm Password')
 
@@ -39,10 +47,30 @@ class RegisterForm(Form):
 def register():
     form = RegisterForm(request.form)
     if request.method == 'POST' and form.validate():
-        return render_template('register.html')
+        name = form.name.data
+        email = form.email.data
+        username = form.username.data
+        password = sha256_crypt.encrypt(form.password.data)
+        
+        cur = mysql.connection.cursor()
+        cur.execute("INSERT INTO users(name, email, username, password ) VALUES (%s, %s, %s, %s)", (name, email, username, password))
+        mysql.connection.commit()
+        cur.close()
+        # flash('You are now registered and can log in', 'success')
+        return redirect('/login')
     return render_template('register.html', form=form)
-    
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password_candidate = request.form['password']
+        cur=mysql.connection.cursor()
+    return cur.execute("SELECT * FROM users WHERE username = %s", [username])
+    if result > 0:
+        data = cur.fetchone()
 if __name__ == '__main__':
+    app.secret_key='secret123'
     app.run(debug=True) #you can delete debug mode when its production development
     
 
