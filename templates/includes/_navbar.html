@@ -14,7 +14,12 @@
       </ul>
 
       <div class="col-md-3 text-end">
-        <button type="button" class="btn btn-outline-primary me-2">Login</button>
-        <button type="button" class="btn btn-primary"><a href="register" class="nav-link">Register</a></button>
+        {% if session.logged_in %}
+          <a type="button" href="dashboard" class="btn me-2">Dashboard</a>
+          <a type="button" href="logout" class="btn me-2">Logout</a>
+        {% else %}
+          <a type="button" href="login" class="btn me-2">Login</a>
+          <a type="button" href="register" class="btn">Register</a>
+        {% endif %}
       </div>
     </header>
