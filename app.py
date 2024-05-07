@@ -173,16 +173,27 @@ def editArticle(id):
     form.body.data = article['body']
     
     if request.method == 'POST' and form.validate():
-        title = form.title.data
-        body = form.body.data
+        title = request.form['title']
+        body = request.form['body']
+        
         cur = mysql.connection.cursor()
+        
         cur.execute("UPDATE articles SET title=%s, body=%s WHERE id=%s", (title, body, id))
+        
         mysql.connection.commit()
+        
         cur.close()
         flash('Article updated','success')
         return redirect(url_for('dashboard'))
     return render_template('editArticle.html', form=form)
 
+@app.route('/deleteArticle/<string:id>', methods=['POST'])
+def deleteArticle(id):
+    cur=mysql.connection.cursor()
+    cur.execute('DELETE FROM articles WHERE id = %s',[id])
+    mysql.connection.commit()
+    flash('Article deleted', 'success')
+    return redirect(url_for('dashboard'))
 
 if __name__ == '__main__':
     app.secret_key='secret123'
