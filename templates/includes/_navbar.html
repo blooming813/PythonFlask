@@ -15,11 +15,11 @@
 
       <div class="col-md-3 text-end">
         {% if session.logged_in %}
-          <a type="button" href="dashboard" class="btn me-2">Dashboard</a>
-          <a type="button" href="logout" class="btn me-2">Logout</a>
+          <a type="button" href="{{url_for('dashboard')}}" class="btn me-2">Dashboard</a>
+          <a type="button" href="{{url_for('logout')}}" class="btn me-2">Logout</a>
         {% else %}
-          <a type="button" href="login" class="btn me-2">Login</a>
-          <a type="button" href="register" class="btn">Register</a>
+          <a type="button" href="{{url_for('login')}}" class="btn me-2">Login</a>
+          <a type="button" href="{{url_for('register')}}" class="btn">Register</a>
         {% endif %}
       </div>
     </header>

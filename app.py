@@ -1,5 +1,5 @@
 from flask import Flask, render_template, flash, redirect, url_for, request, session, logging
-from data import Articles
+# from data import Articles
 from flask_mysqldb import MySQL
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators
 from passlib.hash import sha256_crypt
@@ -15,7 +15,7 @@ app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 mysql = MySQL(app)
 
 #add data
-Articles = Articles()
+# Articles = Articles()
 
 #default page 
 @app.route('/')
@@ -29,11 +29,29 @@ def about():
 
 @app.route('/articles')
 def articles():
-    return render_template('articles.html', articles = Articles)
+    #create cursor
+    cur = mysql.connection.cursor()
+    
+    #get articles
+    result = cur.execute("SELECT * FROM articles")
+    articles = cur.fetchall()
+    if result>0:
+        return render_template('articles.html', articles = articles)
+    else:
+        msg = 'No Articles Found'
+        return render_template('articles.html', msg=msg)
+    #close connection
+    cur.close()
 
 @app.route('/article/<string:id>/')
 def article(id):
-    return render_template('article.html', id=id)
+    #create cursor
+    cur = mysql.connection.cursor()
+    
+    #get articles
+    result = cur.execute("SELECT * FROM articles WHERE id = %s", [id])
+    article = cur.fetchone()
+    return render_template('article.html', article=article)
 
 class RegisterForm(Form):
     name = StringField('Name', [validators.length(min=1, max=50)])
@@ -142,6 +160,29 @@ def addArticle():
         flash('Article created','success')
         return redirect(url_for('dashboard'))
     return render_template('addArticle.html', form=form)
+
+@app.route('/editArticle/<string:id>', methods=['GET', 'POST'])
+@is_logged_in
+def editArticle(id):
+    cur=mysql.connection.cursor()
+    result = cur.execute("SELECT * FROM articles WHERE id = %s", [id])
+    article = cur.fetchone()
+    form = ArticleForm(request.form)
+    
+    form.title.data = article['title']
+    form.body.data = article['body']
+    
+    if request.method == 'POST' and form.validate():
+        title = form.title.data
+        body = form.body.data
+        cur = mysql.connection.cursor()
+        cur.execute("UPDATE articles SET title=%s, body=%s WHERE id=%s", (title, body, id))
+        mysql.connection.commit()
+        cur.close()
+        flash('Article updated','success')
+        return redirect(url_for('dashboard'))
+    return render_template('editArticle.html', form=form)
+
 
 if __name__ == '__main__':
     app.secret_key='secret123'

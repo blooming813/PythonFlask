@@ -3,7 +3,7 @@
     <h1>Dashboard </h1>
     <h4>Welcome, {{session.username}}</h4>
     <div class="mt-4">
-        <a href="/addArticle" class="btn btn-primary">Add Article</a>
+        <a href="/addArticle" class="btn btn-primary mb-3">Add Article</a>
     </div>
     <table class="table table-striped">
         <tr>
@@ -21,7 +21,7 @@
             <td>{{article.create_date}}</td>
             <td>
                 <div class="d-flex justify-content-center">
-                <a href="edit_article/{{article.id}}" class="btn btn-outline-secondary me-2">Edit</a>
+                <a href="editArticle/{{article.id}}" class="btn btn-outline-secondary me-2">Edit</a>
                 <a href="#" class="btn btn-danger">Delete</a>
                 </div>
             </td>
