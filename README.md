@@ -6,14 +6,22 @@ Here is the official link for Flask https://flask.palletsprojects.com/en/3.0.x/i
 1. What is Flask?
 2. How it works?
 3. How to install virtual environment
-    <code>py -3 venv .venv</code>
+    ```plaintext
+    py -3 venv .venv
+    ```
 4. How to install Flask and etc
-    <code>pip install Flask</code>
-    <code>pip install flask-mysqldb</code>
-    <code>pip install -U WTForms</code>
-    <code>pip install passlib</code>
-
-
+    ```plaintext
+    pip install Flask
+    ```
+    ```plaintext
+    pip install flask-mysqldb
+    ```
+    ```plaintext
+    pip install -U WTForms
+    ```
+    ```plaintext
+    pip install passlib
+    ```
 
 5. What I learn
     * Entered Not found msg
