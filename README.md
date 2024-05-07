@@ -6,15 +6,16 @@ Here is the official link for Flask https://flask.palletsprojects.com/en/3.0.x/i
 1. What is Flask?
 2. How it works?
 3. How to install virtual environment
-    -py -3 venv .venv
+    <code>py -3 venv .venv</code>
 4. How to install Flask and etc
-    - pip install Flask
-    - pip install flask-mysqldb
-    - pip install -U WTForms
-    - pip install passlib
+    <code>pip install Flask</code>
+    <code>pip install flask-mysqldb</code>
+    <code>pip install -U WTForms</code>
+    <code>pip install passlib</code>
 
 
-5. What I learnt from this study
+
+5. What I learn
     * Entered Not found msg
         - In '/articl/id' page, It will be overrided route path like '/article/id/dashboard' or '/article/id/login' 
         which are no have set any route like that. It will occur 'Not Found'.
