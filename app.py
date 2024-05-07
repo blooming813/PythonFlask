@@ -100,17 +100,37 @@ def is_logged_in(f):
             return redirect(url_for('login'))
     return wrap
 
+@app.route('/logout')
+@is_logged_in
+def logout():
+    session.pop('logged_in', None)  
+    flash('You are now logged out', 'success')
+    return redirect(url_for('login'))  
+
 @app.route('/dashboard')
 @is_logged_in
 def dashboard():
     return render_template('dashboard.html')
 
-@app.route('/logout')
-def logout():
-    session.pop('logged_in', None)  
-    flash('You are now logged out', 'success')
-    return redirect(url_for('login'))  
-  
+class ArticleForm(Form):
+    title = StringField('Title', [validators.length(min=1, max=200)])
+    body = TextAreaField('Body', [validators.length(min=30)])
+
+@app.route('/addArticle', methods=['GET', 'POST'])
+@is_logged_in
+def addArticle():
+    form = ArticleForm(request.form)
+    if request.method == 'POST' and form.validate():
+        title = form.title.data
+        body = form.body.data
+        cur = mysql.connection.cursor()
+        cur.execute("INSERT INTO articles(title, body, author) VALUES(%s, %s, %s)", (title, body, session['username']))
+        mysql.connection.commit()
+        cur.close()
+        flash('Article created','success')
+        return redirect(url_for('dashboard'))
+    return render_template('addArticle.html', form=form)
+
 if __name__ == '__main__':
     app.secret_key='secret123'
     app.run(debug=True) #you can delete debug mode when its production development
