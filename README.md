@@ -14,7 +14,7 @@ Here is the official link for Flask https://flask.palletsprojects.com/en/3.0.x/i
     - pip install passlib
 
 
-What I learnt from this study
+5. What I learnt from this study
     * Entered Not found msg
         - In '/articl/id' page, It will be overrided route path like '/article/id/dashboard' or '/article/id/login' 
         which are no have set any route like that. It will occur 'Not Found'.
