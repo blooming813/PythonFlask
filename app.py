@@ -110,7 +110,19 @@ def logout():
 @app.route('/dashboard')
 @is_logged_in
 def dashboard():
-    return render_template('dashboard.html')
+    #create cursor
+    cur = mysql.connection.cursor()
+    
+    #get articles
+    result = cur.execute("SELECT * FROM articles")
+    articles = cur.fetchall()
+    if result>0:
+        return render_template('dashboard.html', articles=articles)
+    else:
+        msg = 'No Articles Found'
+        return render_template('dashboard.html', msg=msg)
+    #close connection
+    cur.close()
 
 class ArticleForm(Form):
     title = StringField('Title', [validators.length(min=1, max=200)])
